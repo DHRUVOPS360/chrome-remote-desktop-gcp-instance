@@ -38,7 +38,7 @@ resource "google_compute_firewall" "chrome_desktop" {
   network     = "default"
   allow {
     protocol = "tcp"
-    ports    = ["22",3389"]
+    ports    = ["22","3389"]
   }
   source_ranges =["0.0.0.0/0"]
   target_tags   = [google_compute_instance.chrome_desktop.tags[0]]
