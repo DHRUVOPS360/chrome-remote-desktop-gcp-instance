@@ -7,6 +7,14 @@ resource "google_compute_instance" "chrome_desktop" {
       image = "debian-cloud/debian-11"
     }
   }
+  
+   network_interface {
+    network = "default"
+
+    access_config {
+      // Optional. External IP address configuration.
+    }
+  }
 
   metadata_startup_script = <<-EOF
     #!/bin/bash
