@@ -44,5 +44,5 @@ resource "google_compute_firewall" "chrome_desktop" {
     ports    = ["22","3389"]
   }
   source_ranges =["0.0.0.0/0"]
-  target_tags   = [google_compute_instance.chrome_desktop.tags[0]]
+  target_tags   = [google_compute_instance.chrome_desktop.tags]
 }
