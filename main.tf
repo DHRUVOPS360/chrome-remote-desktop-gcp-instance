@@ -21,7 +21,6 @@ resource "google_compute_instance" "chrome_desktop" {
     sudo systemctl enable chrome-remote-desktop.service
     sudo systemctl start chrome-remote-desktop.service
   EOF
-}
 
   tags = ["chrome-desktop"]
 }
