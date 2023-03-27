@@ -1,4 +1,4 @@
-/*resource "google_compute_instance" "chrome_desktop" {
+resource "google_compute_instance" "chrome_desktop" {
   name         = "ubuntu-desktop"
   machine_type = "e2-medium"
 
@@ -17,23 +17,22 @@
   }
 
   metadata_startup_script = <<-EOF
-    #!/bin/bash
-    # Install desktop environment
-    sudo apt-get update
-    sudo apt-get install -y ubuntu-desktop
-
     # Install Chrome Remote Desktop
     wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
-    sudo apt install -y ./chrome-remote-desktop_current_amd64.deb
-    sudo apt install -y --fix-broken
+    sudo apt-get install --assume-yes ./chrome-remote-desktop_current_amd64.deb
 
-    # Configure Chrome Remote Desktop
-    echo "exec /usr/sbin/lightdm-session \"gnome-session --session=ubuntu\"" > ~/.chrome-remote-desktop-session
-    sudo groupadd chrome-remote-desktop
-    sudo usermod -a -G chrome-remote-desktop $USER
-  EOF
 
-  tags = ["chrome-desktop"]
+    # Configure Gnome System desktop environment
+    sudo DEBIAN_FRONTEND=noninteractive \
+    apt install --assume-yes  task-gnome-desktop
+    sudo bash -c ‘echo “exec /etc/X11/Xsession /usr/bin/gnome-session” > /etc/chrome-remote-desktop-session’
+    sudo systemctl disable gdm3.service
+    sudo reboot
+    curl -L -o google-chrome-stable_current_amd64.deb \
+    https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo apt install --assume-yes ./google-chrome-stable_current_amd64.deb
+    EOF
+    tags = ["chrome-desktop"]
 }
 
 resource "google_compute_firewall" "chrome_desktop" {
@@ -45,4 +44,3 @@ resource "google_compute_firewall" "chrome_desktop" {
   }
   source_ranges = ["0.0.0.0/0"]
 }
-*/
