@@ -9,26 +9,19 @@ resource "google_compute_instance" "chrome_desktop" {
   }
 
   metadata_startup_script = <<-EOF
-    # Install Chrome Remote Desktop
-    wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
-    sudo dpkg --install chrome-remote-desktop_current_amd64.deb
-    sudo apt --fix-broken install -y
-
-    # Install desktop environment and xrdp
-    sudo apt-get install xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils -y
-    sudo apt-get install xrdp -y
-
-    # Configure Chrome Remote Desktop
-    sudo groupadd chrome-remote-desktop
-    sudo usermod -a -G chrome-remote-desktop ${USER}
-    sudo apt-get install --assume-yes chrome-remote-desktop
+    #!/bin/bash
+    sudo apt-get update
+    sudo apt-get install -y xfce4 desktop-base xscreensaver
+    sudo apt-get install -y chrome-remote-desktop
+    sudo apt-get install -y task-xfce-desktop
     echo "xfce4-session" > ~/.chrome-remote-desktop-session
-    sudo systemctl disable lightdm.service
-    echo "exec /usr/bin/startxfce4" > ~/.xsession
-    sudo systemctl enable xrdp.service
-    sudo systemctl enable chrome-remote-desktop.service
+    sudo usermod -a -G chrome-remote-desktop ${USER}
     sudo adduser ${USER} chrome-remote-desktop
+    sudo systemctl disable lightdm.service
+    sudo systemctl enable chrome-remote-desktop.service
+    sudo systemctl start chrome-remote-desktop.service
   EOF
+}
 
   tags = ["chrome-desktop"]
 }
