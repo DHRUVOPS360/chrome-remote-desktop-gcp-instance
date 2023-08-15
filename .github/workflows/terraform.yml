@@ -1,0 +1,45 @@
+name: "Deploy Chrome Remote Desktop Instance"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+    defaults:
+      run:
+        working-directory: ./src
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.1
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt 
+        
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan 
+
+      #- name: Terraform Apply
+       # id: apply
+        #run: terraform apply -auto-approve
+    
+      - name: Terraform Destroy
+        id: destroy
+        run: terraform destroy -auto-approve
